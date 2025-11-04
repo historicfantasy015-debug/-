@@ -672,51 +672,100 @@ IMPORTANT - What to Extract:
 ✅ DO Extract: Question statement, options (A, B, C, D), question number
 ❌ DO NOT Extract: Answers, solutions, explanations, answer keys
 
-For Diagrams in Questions (CRITICAL):
-MANDATORY: Analyze every question carefully. If the question involves ANY visual element - graphs, trees, geometric shapes, circuits, bar charts, coordinate systems, or spatial relationships - you MUST generate an Excalidraw diagram.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DIAGRAM DETECTION & GENERATION - CRITICAL INSTRUCTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Excalidraw JSON Format (EXACT):
-1. Append diagram JSON directly after the question text in question_statement, options, or solution
-2. Format (single line, no breaks): [{"x": 100, "y": 100, "type": "rectangle", "width": 50, "height": 30, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}, {"x": 150, "y": 100, "type": "text", "text": "Label", "fontSize": 14}]
-3. Available types with properties:
-   - rectangle: x, y, width, height, strokeColor, backgroundColor, strokeWidth
-   - ellipse: x, y, width, height, strokeColor, backgroundColor, strokeWidth
-   - line: x, y, points (array of [dx, dy]), strokeColor, strokeWidth
-   - arrow: x, y, points (array of [dx, dy]), strokeColor, strokeWidth
-   - text: x, y, text, fontSize, fontFamily (1=Arial, 2=Courier, 3=Georgia), strokeColor
-4. IMPORTANT: Points are RELATIVE to x,y position. Example: arrow from (10,10) with point [30,40] ends at (40,50)
+RULE 1: WHEN TO USE KATEX ONLY (75% of cases):
+Use ONLY KaTeX (no diagram) when the question involves:
+✅ Pure mathematical expressions (equations, inequalities, calculus)
+✅ Text-based problems that can be described in words
+✅ Numeric data that doesn't need visual representation
+✅ Algebraic word problems
+✅ Theoretical questions without spatial/visual components
 
-Diagram Generation Rules:
-For MCQ/MSQ questions with diagrams:
-- If question text references "graph/diagram/figure/chart/circuit/tree below" → MUST generate diagram
-- If describing geometric shapes or spatial relationships → MUST generate diagram
-- If showing data/statistics → use bar chart or similar
-- If showing networks/connections → use nodes and lines
+Example (KaTeX only): "Find the value of $\\int_0^1 x^2 dx$ given that $f(x) = x^2$."
 
-Example tree structure:
-[{"x": 250, "y": 50, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe", "id": "root"}, {"x": 260, "y": 90, "type": "line", "points": [[0, 0], [-60, 40]], "strokeColor": "#000000"}, {"x": 180, "y": 130, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}]
+RULE 2: WHEN TO GENERATE EXCALIDRAW DIAGRAMS (25% of cases):
+MANDATORY diagram generation when question contains:
+🔴 Geometric figures (triangles, circles, rectangles, polygons)
+🔴 Graphs (coordinate systems, function plots, network graphs)
+🔴 Trees (binary trees, decision trees, organizational charts)
+🔴 Circuits (electrical, logic gates, flowcharts)
+🔴 Tables (data tables, comparison tables)
+🔴 Venn diagrams (sets, overlapping regions)
+🔴 Bar charts, pie charts, histograms
+🔴 Free body diagrams (forces, vectors)
+🔴 Network diagrams (nodes and edges)
+🔴 Spatial arrangements (objects in positions)
+🔴 Question explicitly mentions "figure", "diagram", "shown below", "given figure"
 
-When diagram is used in options: Keep all options text on one line. Append diagram JSON at the end.
-When diagram is used in solution: Explain steps on one line. Append diagram JSON at the end to visualize the result.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXCALIDRAW JSON FORMAT - EXACT SYNTAX
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CRITICAL: Generate valid Excalidraw JSON and embed it at the END of question_statement or options
+
+Format: [{"x": 100, "y": 100, "type": "rectangle", "width": 50, "height": 30, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}]
+
+Available Element Types:
+1. rectangle: {"x": 100, "y": 100, "type": "rectangle", "width": 80, "height": 50, "strokeColor": "#000000", "backgroundColor": "#e0f2fe", "strokeWidth": 2}
+2. ellipse: {"x": 200, "y": 100, "type": "ellipse", "width": 60, "height": 60, "strokeColor": "#000000", "backgroundColor": "#e0f2fe", "strokeWidth": 2}
+3. line: {"x": 100, "y": 100, "type": "line", "points": [[0, 0], [50, 0], [50, 50]], "strokeColor": "#000000", "strokeWidth": 2}
+4. arrow: {"x": 100, "y": 100, "type": "arrow", "points": [[0, 0], [100, 50]], "strokeColor": "#000000", "strokeWidth": 2}
+5. text: {"x": 150, "y": 120, "type": "text", "text": "A", "fontSize": 18, "fontFamily": 1, "strokeColor": "#000000"}
+
+IMPORTANT RULES:
+- Points in line/arrow are RELATIVE to (x, y). Example: x=100, y=100, points=[[0,0], [50,50]] draws from (100,100) to (150,150)
+- Use consistent spacing (80-100 units between elements)
+- Use colors: #000000 (black borders), #e0f2fe (light blue fill), #3b82f6 (blue), #22c55e (green)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COMMON DIAGRAM PATTERNS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TABLE (Rectangle + Ellipse + Labels):
+[{"x": 100, "y": 150, "type": "rectangle", "width": 200, "height": 120, "strokeColor": "#000000", "backgroundColor": "transparent", "strokeWidth": 2}, {"x": 180, "y": 50, "type": "polygon", "points": [[0,0], [150,220], [-150,220]], "strokeColor": "#000000", "backgroundColor": "transparent", "strokeWidth": 2}, {"x": 130, "y": 190, "type": "ellipse", "width": 220, "height": 120, "strokeColor": "#000000", "backgroundColor": "transparent", "strokeWidth": 2}, {"x": 70, "y": 200, "type": "text", "text": "1", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 210, "y": 60, "type": "text", "text": "2", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 260, "y": 300, "type": "text", "text": "3", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 140, "y": 230, "type": "text", "text": "4", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 190, "y": 240, "type": "text", "text": "P", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 260, "y": 250, "type": "text", "text": "Q", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 210, "y": 170, "type": "text", "text": "R", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}]
+
+BINARY TREE (3 nodes):
+[{"x": 250, "y": 50, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}, {"x": 265, "y": 75, "type": "text", "text": "5", "fontSize": 16, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 260, "y": 90, "type": "line", "points": [[0, 0], [-60, 40]], "strokeColor": "#000000"}, {"x": 180, "y": 130, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}, {"x": 195, "y": 155, "type": "text", "text": "3", "fontSize": 16, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 280, "y": 90, "type": "line", "points": [[0, 0], [60, 40]], "strokeColor": "#000000"}, {"x": 320, "y": 130, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}, {"x": 335, "y": 155, "type": "text", "text": "7", "fontSize": 16, "fontFamily": 1, "strokeColor": "#000000"}]
+
+BAR CHART (3 bars):
+[{"x": 50, "y": 100, "type": "rectangle", "width": 40, "height": 100, "strokeColor": "#000000", "backgroundColor": "#3b82f6"}, {"x": 100, "y": 80, "type": "rectangle", "width": 40, "height": 120, "strokeColor": "#000000", "backgroundColor": "#3b82f6"}, {"x": 150, "y": 120, "type": "rectangle", "width": 40, "height": 80, "strokeColor": "#000000", "backgroundColor": "#3b82f6"}]
+
+GEOMETRIC FIGURE (Triangle):
+[{"x": 200, "y": 50, "type": "line", "points": [[0, 0], [100, 0], [50, 86.6], [0, 0]], "strokeColor": "#000000", "strokeWidth": 2}, {"x": 190, "y": 40, "type": "text", "text": "A", "fontSize": 16, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 310, "y": 40, "type": "text", "text": "B", "fontSize": 16, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 245, "y": 145, "type": "text", "text": "C", "fontSize": 16, "fontFamily": 1, "strokeColor": "#000000"}]
+
+CIRCUIT (Simple resistor network):
+[{"x": 100, "y": 150, "type": "line", "points": [[0, 0], [50, 0]], "strokeColor": "#000000", "strokeWidth": 2}, {"x": 150, "y": 140, "type": "rectangle", "width": 60, "height": 20, "strokeColor": "#000000", "backgroundColor": "transparent", "strokeWidth": 2}, {"x": 165, "y": 130, "type": "text", "text": "R1", "fontSize": 14, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 210, "y": 150, "type": "line", "points": [[0, 0], [50, 0]], "strokeColor": "#000000", "strokeWidth": 2}]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EMBEDDING DIAGRAMS IN OUTPUT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In question_statement: "In the given figure, numbers are associated with shapes. What is P+Q+R? [EXCALIDRAW_JSON_HERE]"
+In options: ["Option A text", "Option B with diagram [EXCALIDRAW_JSON_HERE]", "Option C text", "Option D text"]
 
 ${contextInfo}${memoryInfo}
 
 Return a JSON array of questions in this exact format:
 [
   {
-    "question_statement": "Complete question text with all mathematical notation in LaTeX format. If a diagram exists, its Excalidraw JSON will be embedded here.",
+    "question_statement": "Complete question text with LaTeX math. If diagram needed, Excalidraw JSON embedded at end.",
     "question_type": "MCQ|MSQ|NAT|Subjective",
-    "options": ["Option A text", "Option B text", "Option C text", "Option D text"] or null for NAT/Subjective,
+    "options": ["Option A", "Option B", "Option C", "Option D"] or null,
     "question_number": "Question number if visible",
     "is_continuation": true/false,
     "spans_multiple_pages": true/false
   }
 ]
 
-EXAMPLE OUTPUT WITH DIAGRAM:
+EXAMPLES:
+
+EXAMPLE 1 (KaTeX only - no diagram):
 [
   {
-    "question_statement": "In the given tree structure, how many leaf nodes are present? [{"x": 250, "y": 50, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}, {"x": 260, "y": 90, "type": "line", "points": [[0, 0], [-60, 40]], "strokeColor": "#000000"}, {"x": 180, "y": 130, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}, {"x": 280, "y": 90, "type": "line", "points": [[0, 0], [60, 40]], "strokeColor": "#000000"}, {"x": 320, "y": 130, "type": "ellipse", "width": 40, "height": 40, "strokeColor": "#000000", "backgroundColor": "#e0f2fe"}]",
+    "question_statement": "Find the value of $\\int_0^1 (x^2 + 2x) dx$.",
     "question_type": "NAT",
     "options": null,
     "question_number": "1",
@@ -725,8 +774,20 @@ EXAMPLE OUTPUT WITH DIAGRAM:
   }
 ]
 
+EXAMPLE 2 (With Venn diagram):
+[
+  {
+    "question_statement": "In the given figure, the numbers associated with the rectangle, triangle, and ellipse are 1, 2, and 3, respectively. Which one among the given options is the most appropriate combination of P, Q, and R? [{"x": 100, "y": 150, "type": "rectangle", "width": 200, "height": 120, "strokeColor": "#000000", "backgroundColor": "transparent", "strokeWidth": 2}, {"x": 180, "y": 50, "type": "line", "points": [[0,0], [150,220], [-150,220], [0,0]], "strokeColor": "#000000", "strokeWidth": 2}, {"x": 130, "y": 190, "type": "ellipse", "width": 220, "height": 120, "strokeColor": "#000000", "backgroundColor": "transparent", "strokeWidth": 2}, {"x": 70, "y": 200, "type": "text", "text": "1", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 210, "y": 60, "type": "text", "text": "2", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 260, "y": 300, "type": "text", "text": "3", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 140, "y": 230, "type": "text", "text": "4", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 190, "y": 240, "type": "text", "text": "P", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 260, "y": 250, "type": "text", "text": "Q", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}, {"x": 210, "y": 170, "type": "text", "text": "R", "fontSize": 24, "fontFamily": 1, "strokeColor": "#000000"}]",
+    "question_type": "MCQ",
+    "options": ["P = 6; Q = 5; R = 3", "P = 5; Q = 6; R = 3", "P = 3; Q = 6; R = 6", "P = 5; Q = 3; R = 6"],
+    "question_number": "2",
+    "is_continuation": false,
+    "spans_multiple_pages": false
+  }
+]
+
 If no questions are found, return an empty array [].
-Focus on accuracy and completeness. Extract ONLY questions and options, NOT answers.`;
+Focus on accuracy. Use diagrams ONLY when visuals are essential.`;
 
   try {
     const response = await callGeminiAPI(prompt, imageBase64, 0.1, 4000);
